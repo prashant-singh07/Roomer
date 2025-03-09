@@ -2,20 +2,27 @@ import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {
+  AddFlatDetailsScreen,
+  CompleteYourProfileScreen,
   HomeScreen,
   LoginScreen,
   MessagesScreen,
   ProfileScreen,
   RegisterScreen,
   SortedScreen,
+  UserTypeScreen,
 } from '../screens';
+import {CustomTabBar} from '../components';
 
 const Stack = createNativeStackNavigator();
 const Tabs = createBottomTabNavigator();
 
 function BottomTabs() {
   return (
-    <Tabs.Navigator>
+    <Tabs.Navigator
+      // initialRouteName="HomeScreen"
+      screenOptions={{headerShown: false}}
+      tabBar={props => <CustomTabBar {...props} />}>
       <Tabs.Screen name="HomeScreen" component={HomeScreen} />
       <Tabs.Screen name="SortedScreen" component={SortedScreen} />
       <Tabs.Screen name="MessagesScreen" component={MessagesScreen} />
@@ -26,8 +33,25 @@ function BottomTabs() {
 
 function RegisterStack() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      initialRouteName="LoginScreen"
+      screenOptions={{headerShown: false}}>
+      <Stack.Screen name="LoginScreen" component={LoginScreen} />
       <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+      <Stack.Screen
+        name="UserTypeScreen"
+        component={UserTypeScreen}
+        options={{gestureEnabled: false}}
+      />
+      <Stack.Screen
+        name="CompleteYourProfileScreen"
+        component={CompleteYourProfileScreen}
+      />
+      <Stack.Screen
+        name="AddFlatDetailsScreen"
+        component={AddFlatDetailsScreen}
+        options={{gestureEnabled: false}}
+      />
     </Stack.Navigator>
   );
 }
@@ -35,11 +59,14 @@ function RegisterStack() {
 function AppNavigations() {
   return (
     <Stack.Navigator
-      initialRouteName="LoginScreen"
+      initialRouteName="RegisterStack"
       screenOptions={{headerShown: false}}>
-      <Stack.Screen name="LoginScreen" component={LoginScreen} />
       <Stack.Screen name="RegisterStack" component={RegisterStack} />
-      <Stack.Screen name="BottomTabs" component={BottomTabs} />
+      <Stack.Screen
+        name="BottomTabs"
+        component={BottomTabs}
+        options={{gestureEnabled: false}}
+      />
     </Stack.Navigator>
   );
 }
