@@ -4,6 +4,7 @@ export const COLORS = {
   '7F30FF': '#7F30FF',
   E0E0E0: '#E0E0E0',
   B1B1B1: '#B1B1B1',
+  '000000': '#000000',
 };
 
 export const FONTS = {

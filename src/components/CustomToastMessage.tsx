@@ -13,67 +13,87 @@ import {
   View,
   Text,
   Platform,
+  Image,
 } from 'react-native';
 import {COLORS} from '../assets/theme';
-import ReactNativeModal from 'react-native-modal';
+import ReactNativeModal, {ModalProps} from 'react-native-modal';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {IMAGES} from '../assets/images';
 
-interface CustomToastMessageProps {
+interface CustomToastMessageProps extends Partial<ModalProps> {
   message?: string | undefined;
   description?: string | undefined;
-  autoClose?: number;
+  isSuccess?: boolean | undefined;
+  // autoClose?: number;
+}
+export interface CustomToastMessageRef {
+  open: () => void;
+  close: () => void;
 }
 
-const CustomToastMessage: FC<CustomToastMessageProps> = forwardRef(
-  (props, ref) => {
-    const {message, description, autoClose} = props;
-    const [isVisible, setIsVisible] = useState<boolean>(false);
+const CustomToastMessage = forwardRef<
+  CustomToastMessageRef,
+  CustomToastMessageProps
+>((props, ref) => {
+  const {message, description, isSuccess = true, ...rest} = props;
+  const [isVisible, setIsVisible] = useState<boolean>(false);
 
-    const {top} = useSafeAreaInsets();
+  const {top} = useSafeAreaInsets();
 
-    useImperativeHandle(ref, () => {
-      return {
-        open: openModal,
-        close: closeModal,
-      };
-    });
+  useImperativeHandle(ref, () => {
+    return {
+      open: openModal,
+      close: closeModal,
+    };
+  });
 
-    useEffect(() => {
-      let timer: ReturnType<typeof setTimeout>;
-      if (isVisible && autoClose)
-        timer = setTimeout(() => closeModal, autoClose);
-
-      return () => clearTimeout(timer);
-    }, [isVisible, autoClose]);
-
-    function openModal() {
-      setIsVisible(true);
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+    if (isVisible) {
+      timer = setTimeout(() => closeModal(), 2000);
     }
 
-    function closeModal() {
-      setIsVisible(false);
-    }
-    return (
-      <ReactNativeModal
-        isVisible={isVisible}
-        style={styles.modalStyle}
-        animationIn={'slideInDown'}
-        animationOut={'slideOutUp'}
-        onBackdropPress={closeModal}
-        swipeDirection={'up'}
-        onBackButtonPress={closeModal}>
-        <View
-          style={[
-            styles.modalContainer,
-            {paddingTop: Platform.OS == 'ios' ? top + 20 : top},
-          ]}>
+    return () => clearTimeout(timer);
+  }, [isVisible]);
+
+  function openModal() {
+    setIsVisible(true);
+  }
+
+  function closeModal() {
+    setIsVisible(false);
+  }
+
+  return (
+    <ReactNativeModal
+      isVisible={isVisible}
+      style={styles.modalStyle}
+      animationIn={'slideInDown'}
+      animationOut={'slideOutUp'}
+      animationInTiming={500}
+      animationOutTiming={500}
+      swipeDirection={'up'}
+      onSwipeComplete={closeModal}
+      swipeThreshold={0.8}
+      backdropOpacity={0}
+      {...rest}>
+      <View
+        style={[
+          styles.modalContainer,
+          {marginTop: Platform.OS === 'ios' ? top + 10 : top},
+        ]}>
+        <Image
+          source={isSuccess ? IMAGES.ICON_CHECK_CIRCLE : IMAGES.GOOGLE_ICON}
+          style={styles.statusImageStyle}
+        />
+        <View>
           {message ? <Text>{message}</Text> : null}
           {description ? <Text>{description}</Text> : null}
         </View>
-      </ReactNativeModal>
-    );
-  },
-);
+      </View>
+    </ReactNativeModal>
+  );
+});
 
 const styles = StyleSheet.create({
   modalStyle: {
@@ -81,11 +101,26 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   modalContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: COLORS['FFFFFF'],
-    borderBottomRightRadius: 20,
-    borderBottomLeftRadius: 20,
+    borderRadius: 20,
     paddingHorizontal: 20,
     paddingVertical: 20,
+    marginHorizontal: 2,
+    borderWidth: 1,
+    borderColor: COLORS['7F30FF'],
+    shadowColor: COLORS['000000'],
+    shadowOpacity: 0.4,
+    shadowRadius: 4,
+    shadowOffset: {height: 2, width: 2},
+    elevation: 4,
+  },
+  statusImageStyle: {
+    height: 20,
+    width: 20,
+    resizeMode: 'contain',
+    marginRight: 10,
   },
 });
 

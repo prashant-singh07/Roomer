@@ -34,7 +34,7 @@ function BottomTabs() {
 function RegisterStack() {
   return (
     <Stack.Navigator
-      initialRouteName="LoginScreen"
+      initialRouteName="CompleteYourProfileScreen"
       screenOptions={{headerShown: false}}>
       <Stack.Screen name="LoginScreen" component={LoginScreen} />
       <Stack.Screen name="RegisterScreen" component={RegisterScreen} />

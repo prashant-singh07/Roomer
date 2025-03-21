@@ -16,7 +16,6 @@ import {
   StyleSheet,
   StyleProp,
   TextStyle,
-  Platform,
   ViewStyle,
 } from 'react-native';
 import {COLORS, FONTS} from '../assets/theme';

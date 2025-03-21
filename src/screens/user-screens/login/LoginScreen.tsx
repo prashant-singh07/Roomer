@@ -17,6 +17,10 @@ import {
 import {StackActions, useNavigation} from '@react-navigation/native';
 import {performEmailPhoneValidation, SCREEN_WIDTH} from '../../../utilities';
 import {IMAGES} from '../../../assets/images';
+import {CustomToastMessageRef} from '../../../components/CustomToastMessage';
+import {useDispatch, useSelector} from 'react-redux';
+import {getSampleData} from '../../../store/sampleSlice';
+import type {AppDispatch, RootState} from '../../../store/store'; // Import types
 
 interface LoginScreenProps {}
 
@@ -26,8 +30,19 @@ const LoginScreen: FC<LoginScreenProps> = props => {
   const emailPhoneValueRef = useRef('');
   const passwordValueRef = useRef('');
   const [isButtonEnabled, setIsButtonEnabled] = useState<boolean>(false);
+  const refModal = useRef<CustomToastMessageRef>(null);
 
-  const refModal = useRef(null);
+  const dispatch = useDispatch<AppDispatch>();
+  const {sampleData, sampleDataFailure, sampleDataLoading, sampleDataSuccess} =
+    useSelector((state: RootState) => state.sample);
+
+  useEffect(() => {
+    dispatch(getSampleData());
+
+    return () => {
+      refModal.current = null;
+    };
+  }, []);
 
   function validateInputs() {
     const isEmailPhoneValid = performEmailPhoneValidation(
@@ -56,12 +71,15 @@ const LoginScreen: FC<LoginScreenProps> = props => {
     );
 
     refModal.current?.open();
-    // const replaceAction = StackActions.replace('BottomTabs');
-    // navigation.dispatch(replaceAction);
 
     // make the apii call to perform credential validation
     // if true -> save login creds -> navigate to home
     // else show error
+  }
+
+  function navigateToHomeScreens() {
+    const replaceAction = StackActions.replace('BottomTabs');
+    navigation.dispatch(replaceAction);
   }
 
   function handleGoogleLogin() {}
@@ -94,7 +112,6 @@ const LoginScreen: FC<LoginScreenProps> = props => {
           containerStyle={styles.marginB30}
         />
         <CustomButton
-          style={{backgroundColor: 'blue'}}
           disabled={!isButtonEnabled}
           title="Continue"
           onPress={handleContinuePressed}
@@ -123,8 +140,10 @@ const LoginScreen: FC<LoginScreenProps> = props => {
       </ScrollView>
       <CustomToastMessage
         ref={refModal}
+        isSuccess={true}
         message="Login Success"
         description=""
+        onModalHide={() => navigateToHomeScreens()}
       />
     </View>
   );

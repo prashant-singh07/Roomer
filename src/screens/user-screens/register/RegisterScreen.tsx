@@ -3,8 +3,8 @@ import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {COLORS, FONTS} from '../../../assets/theme';
 import {
   CustomButton,
-  CustomModal,
   CustomTextInput,
+  CustomToastMessage,
   CustomTouchable,
 } from '../../../components';
 import {StackActions, useNavigation} from '@react-navigation/native';
@@ -13,6 +13,7 @@ import {
   performNameValidation,
 } from '../../../utilities';
 import {IMAGES} from '../../../assets/images';
+import {CustomToastMessageRef} from '../../../components/CustomToastMessage';
 
 interface RegisterScreenProps {}
 
@@ -21,7 +22,7 @@ const RegisterScreen: FC<RegisterScreenProps> = props => {
   const nameValueRef = useRef('');
   const emailPhoneValueRef = useRef('');
   const passwordValueRef = useRef('');
-  const registerMessageModalRef = useRef(null);
+  const registerMessageModalRef = useRef<CustomToastMessageRef>(null);
   const [isButtonEnabled, setIsButtonEnabled] = useState<boolean>(false);
 
   //   useEffect(() => {
@@ -73,8 +74,8 @@ const RegisterScreen: FC<RegisterScreenProps> = props => {
   }
 
   function navigateToUserTypeScreen() {
-    // const navigationAction = StackActions.push('UserTypeScreen');
-    // navigation.dispatch(navigationAction);
+    const navigationAction = StackActions.push('UserTypeScreen');
+    navigation.dispatch(navigationAction);
   }
 
   return (
@@ -110,13 +111,12 @@ const RegisterScreen: FC<RegisterScreenProps> = props => {
           </CustomTouchable>
         </View>
       </ScrollView>
-      <CustomModal
+      <CustomToastMessage
         ref={registerMessageModalRef}
-        autoCloseDuration={3000}
         onModalHide={() => navigateToUserTypeScreen()}
-        icon={IMAGES.ICON_CHECK_CIRCLE}
-        // title="Sign up Complete !!"
-        // description="Complete your profile to explore Roomer"
+        isSuccess={true}
+        message="Sign up Complete !!"
+        description="Complete your profile to explore Roomer"
       />
     </View>
   );

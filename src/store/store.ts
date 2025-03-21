@@ -1,10 +1,12 @@
 import {configureStore} from '@reduxjs/toolkit';
+import sampleReducer from './sampleSlice';
 
 export const store = configureStore({
   reducer: {
     //   posts: postsReducer,
     //   comments: commentsReducer,
     //   users: usersReducer,
+    sample: sampleReducer,
   },
 });
 

@@ -20,7 +20,7 @@ import {
 import ReactNativeModal, {ModalProps} from 'react-native-modal';
 import {COLORS, FONTS} from '../assets/theme';
 
-interface CustomModalProps extends ModalProps {
+interface CustomModalProps extends Partial<ModalProps> {
   autoCloseDuration?: number;
   modalContainerStyle?: StyleProp<ViewStyle> | undefined;
   icon?: ImageSourcePropType | undefined;
@@ -31,77 +31,84 @@ interface CustomModalProps extends ModalProps {
   descriptionStyle?: StyleProp<TextStyle> | undefined;
 }
 
-const CustomModal: FC<CustomModalProps> = forwardRef((props, ref) => {
-  const {
-    autoCloseDuration,
-    modalContainerStyle,
-    icon,
-    iconStyle,
-    title,
-    titleStyle,
-    description,
-    descriptionStyle,
-    ...rest
-  } = props;
-  const [isVisible, setIsVisible] = useState<boolean>(false);
+export interface CustomModalRef {
+  open: () => void;
+  close: () => void;
+}
 
-  useImperativeHandle(
-    ref,
-    () => {
-      return {
-        open: openModal,
-        close: closeModal,
+const CustomModal = forwardRef<CustomModalRef, CustomModalProps>(
+  (props, ref) => {
+    const {
+      autoCloseDuration,
+      modalContainerStyle,
+      icon,
+      iconStyle,
+      title,
+      titleStyle,
+      description,
+      descriptionStyle,
+      ...rest
+    } = props;
+    const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+
+    useImperativeHandle(
+      ref,
+      () => {
+        return {
+          open: openModal,
+          close: closeModal,
+        };
+      },
+      [],
+    );
+
+    useEffect(() => {
+      let timer: ReturnType<typeof setTimeout>;
+      if (isModalVisible && autoCloseDuration) {
+        timer = setTimeout(() => {
+          closeModal();
+        }, autoCloseDuration);
+      }
+
+      return () => {
+        clearTimeout(timer);
       };
-    },
-    [],
-  );
+    }, [autoCloseDuration, isModalVisible]);
 
-  useEffect(() => {
-    let timer: ReturnType<typeof setTimeout>;
-    if (isVisible && autoCloseDuration) {
-      timer = setTimeout(() => {
-        closeModal();
-      }, autoCloseDuration);
+    function openModal() {
+      setIsModalVisible(true);
     }
 
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [autoCloseDuration, isVisible]);
+    function closeModal() {
+      setIsModalVisible(false);
+    }
 
-  function openModal() {
-    setIsVisible(true);
-  }
-
-  function closeModal() {
-    setIsVisible(false);
-  }
-
-  return (
-    <ReactNativeModal
-      isVisible={isVisible}
-      animationIn={'fadeIn'}
-      animationOut={'fadeOut'}
-      style={styles.modalStyle}
-      onBackButtonPress={closeModal}
-      onBackdropPress={closeModal}
-      {...rest}>
-      <View style={[styles.modalContainerStyle, modalContainerStyle]}>
-        {icon ? (
-          <Image style={[styles.iconStyle, iconStyle]} source={icon} />
-        ) : null}
-        {title ? (
-          <Text style={[styles.titleStyle, titleStyle]}>{title}</Text>
-        ) : null}
-        {description ? (
-          <Text style={[styles.descriptionStyle, descriptionStyle]}>
-            {description}
-          </Text>
-        ) : null}
-      </View>
-    </ReactNativeModal>
-  );
-});
+    return (
+      <ReactNativeModal
+        isVisible={isModalVisible}
+        animationIn={'fadeIn'}
+        animationOut={'fadeOut'}
+        style={styles.modalStyle}
+        onBackButtonPress={closeModal}
+        onBackdropPress={closeModal}
+        {...rest}>
+        <View style={[styles.modalContainerStyle, modalContainerStyle]}>
+          {icon ? (
+            <Image style={[styles.iconStyle, iconStyle]} source={icon} />
+          ) : null}
+          {title ? (
+            <Text style={[styles.titleStyle, titleStyle]}>{title}</Text>
+          ) : null}
+          {description ? (
+            <Text style={[styles.descriptionStyle, descriptionStyle]}>
+              {description}
+            </Text>
+          ) : null}
+        </View>
+      </ReactNativeModal>
+    );
+  },
+);
 
 const styles = StyleSheet.create({
   modalStyle: {

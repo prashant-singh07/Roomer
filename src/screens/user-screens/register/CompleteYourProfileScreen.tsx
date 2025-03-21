@@ -7,6 +7,9 @@ import DatePicker from 'react-native-date-picker';
 import {Dropdown} from 'react-native-element-dropdown';
 import {CustomButton, CustomModal, CustomTextInput} from '../../../components';
 import {IMAGES} from '../../../assets/images';
+import {CustomModalRef} from '../../../components/CustomModal';
+import MultiSlider from '@ptomasroos/react-native-multi-slider';
+import {SCREEN_WIDTH} from '../../../utilities';
 
 const TIME_OF_STAY = [
   {
@@ -113,9 +116,9 @@ const CompleteYourProfileScreen: FC<CompleteYourProfileScreenProps> = props => {
   ];
   const navigation = useNavigation();
   const route = useRoute();
-  const {userId} = route?.params; //userId->0-> looking for flat + flatmates; userId->1-> looking for flatmate;
+  // const {userId} = route?.params; //userId->0-> looking for flat + flatmates; userId->1-> looking for flatmate;
 
-  const doesUserHasFlat = !!userId;
+  const doesUserHasFlat = false; //!!userId;
 
   const timeOfStayIdRef = useRef<number | null>(null);
   const genderIdRef = useRef<number | null>(null);
@@ -123,9 +126,10 @@ const CompleteYourProfileScreen: FC<CompleteYourProfileScreenProps> = props => {
   const dietaryHabitIdRef = useRef<number | null>(null);
   const sleepingHabitIdRef = useRef<number | null>(null);
   const doYouHaveVehicleIdRef = useRef<number | null>(null);
-  const profileCompleteModalRef = useRef(null);
+  const profileCompleteModalRef = useRef<CustomModalRef>(null);
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
+  const [values, setValues] = useState([14000, 20000]);
 
   function handleTimeOfStayPressed(id: number | null) {
     console.log('id handleTimeOfStayPressed', id);
@@ -192,7 +196,8 @@ const CompleteYourProfileScreen: FC<CompleteYourProfileScreenProps> = props => {
     );
     navigation.dispatch(navigateToAddFlatDetailsScreenAction);
   }
-
+  const [leftValue, setLeftValue] = useState(20);
+  const [rightValue, setRightValue] = useState(80);
   return (
     <View style={styles.screenContainer}>
       <ScrollView
@@ -200,6 +205,40 @@ const CompleteYourProfileScreen: FC<CompleteYourProfileScreenProps> = props => {
         contentContainerStyle={styles.scrollContainer}>
         {doesUserHasFlat ? null : (
           <>
+            <Text style={styles.titleStyle}>Select Your Rent Range</Text>
+            <MultiSlider
+              values={values}
+              min={10000}
+              max={30000}
+              step={1}
+              onValuesChange={val => setValues(val)}
+              selectedStyle={{backgroundColor: COLORS['7F30FF']}}
+              unselectedStyle={{backgroundColor: COLORS['E0E0E0']}}
+              containerStyle={{
+                borderWidth: 1,
+                borderColor: COLORS['E0E0E0'],
+                paddingHorizontal: 20,
+                paddingTop: 20,
+                // paddingBottom: 30,
+                justifyContent: 'flex-start',
+                height: 60,
+                borderRadius: 12,
+                marginBottom: 20,
+              }}
+              markerStyle={{
+                backgroundColor: COLORS['7F30FF'],
+                height: 12,
+                width: 12,
+                borderRadius: 6,
+                borderWidth: 0,
+              }}
+              customLabel={({oneMarkerValue, twoMarkerValue}) => {
+                return <Text>{oneMarkerValue}</Text>;
+              }}
+              minMarkerOverlapDistance={20}
+              trackStyle={{height: 2}}
+              sliderLength={SCREEN_WIDTH - 80}
+            />
             <CustomSelectableChip
               containerStyle={styles.marginB20}
               title="Time of Stay"
@@ -222,7 +261,15 @@ const CompleteYourProfileScreen: FC<CompleteYourProfileScreenProps> = props => {
         />
 
         <Text style={styles.titleStyle}>Age</Text>
-        {/* <Dropdown data={[10, 20]} /> */}
+        <View style={[styles.flexRowCenter, styles.marginB20]}>
+          <CustomTextInput
+            containerStyle={[styles.flex1, styles.marginR12]}
+            showAnimation={false}
+            placeholder="Rent"
+            keyboardType="number-pad"
+          />
+          <Text style={styles.f16MedB1B1B1}>Years Old</Text>
+        </View>
 
         <CustomSelectableChip
           containerStyle={styles.marginB20}
@@ -235,6 +282,7 @@ const CompleteYourProfileScreen: FC<CompleteYourProfileScreenProps> = props => {
           College/University{' '}
           <Text style={styles.colorB1B1B1}>{' (Optional)'}</Text>
         </Text>
+        <CustomTextInput containerStyle={styles.marginB20} />
         {/* <Dropdown /> */}
 
         <Text style={styles.titleStyle}>
@@ -287,12 +335,12 @@ const CompleteYourProfileScreen: FC<CompleteYourProfileScreenProps> = props => {
         style={styles.buttonStyle}
         onPress={handleContinuePressed}
       />
-      {/* <CustomModal
+      <CustomModal
         ref={profileCompleteModalRef}
         title="Profile Completed !!"
         icon={IMAGES.ICON_CHECK_CIRCLE}
         onModalHide={() => handleNavigation()}
-      /> */}
+      />
     </View>
   );
 };
@@ -303,11 +351,21 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS['FFFFFF'],
     justifyContent: 'center',
   },
+  flex1: {
+    flex: 1,
+  },
   scrollContainer: {
     flexGrow: 1,
     backgroundColor: COLORS['FFFFFF'],
     paddingHorizontal: 20,
     paddingVertical: 20,
+  },
+  slider: {
+    width: 300,
+    height: 40,
+  },
+  marginR12: {
+    marginRight: 12,
   },
   marginB12: {
     marginBottom: 12,
@@ -327,6 +385,15 @@ const styles = StyleSheet.create({
   buttonStyle: {
     marginVertical: 15,
     marginHorizontal: 20,
+  },
+  flexRowCenter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  f16MedB1B1B1: {
+    fontSize: 16,
+    fontFamily: FONTS.MEDIUM,
+    color: COLORS['B1B1B1'],
   },
 });
 
