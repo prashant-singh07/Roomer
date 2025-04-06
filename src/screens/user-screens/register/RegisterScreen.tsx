@@ -73,9 +73,9 @@ const RegisterScreen: FC<RegisterScreenProps> = props => {
     // navigation.dispatch(navigationAction);
   }
 
-  function navigateToUserTypeScreen() {
-    const navigationAction = StackActions.push('UserTypeScreen');
-    navigation.dispatch(navigationAction);
+  function navigateToBottomTabs() {
+    const replaceAction = StackActions.replace('BottomTabs');
+    navigation.dispatch(replaceAction);
   }
 
   return (
@@ -113,7 +113,7 @@ const RegisterScreen: FC<RegisterScreenProps> = props => {
       </ScrollView>
       <CustomToastMessage
         ref={registerMessageModalRef}
-        onModalHide={() => navigateToUserTypeScreen()}
+        onModalHide={navigateToBottomTabs}
         isSuccess={true}
         message="Sign up Complete !!"
         description="Complete your profile to explore Roomer"

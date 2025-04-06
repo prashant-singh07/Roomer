@@ -15,19 +15,15 @@ const CustomTabBar: FC<BottomTabBarProps> = props => {
   function getTabBarIcon(routeName: string) {
     let activeIcon, inactiveIcon, label;
     switch (routeName) {
-      case 'HomeScreen':
-        label = 'Home';
+      case 'InvoiceScreen':
+        label = 'Invoice';
         break;
-      case 'SortedScreen':
-        label = 'Sorted';
-        break;
-      case 'MessageScreen':
-        label = 'Message';
-        break;
-      case 'ProfileScreen':
-        label = 'Profile';
+      case 'InventoryScreen':
+        label = 'Inventory';
         break;
       default:
+        label = 'Invoice';
+        break;
     }
     return {activeIcon, inactiveIcon, label};
   }

@@ -1238,7 +1238,7 @@ PODS:
     - React-jsiexecutor
     - React-RCTFBReactNativeSpec
     - ReactCommon/turbomodule/core
-  - react-native-date-picker (5.0.10):
+  - react-native-date-picker (5.0.12):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1980,7 +1980,7 @@ SPEC CHECKSUMS:
   fmt: a40bb5bd0294ea969aaaba240a927bd33d878cdd
   glog: eb93e2f488219332457c3c4eafd2738ddc7e80b8
   hermes-engine: b417d2b2aee3b89b58e63e23a51e02be91dc876d
-  RCT-Folly: e78785aa9ba2ed998ea4151e314036f6c49e6d82
+  RCT-Folly: 36fe2295e44b10d831836cc0d1daec5f8abcf809
   RCTDeprecation: b2eecf2d60216df56bc5e6be5f063826d3c1ee35
   RCTRequired: 78522de7dc73b81f3ed7890d145fa341f5bb32ea
   RCTTypeSafety: c135dd2bf50402d87fd12884cbad5d5e64850edd
@@ -2010,7 +2010,7 @@ SPEC CHECKSUMS:
   React-logger: 018826bfd51b9f18e87f67db1590bc510ad20664
   React-Mapbuffer: 3c11cee7737609275c7b66bd0b1de475f094cedf
   React-microtasksnativemodule: 843f352b32aacbe13a9c750190d34df44c3e6c2c
-  react-native-date-picker: de7cd19e54d0eaf899adae7ab9c3f0dd1d5dbc52
+  react-native-date-picker: 4b582dbbecd3183e2268eed3645dd099c65c58cd
   react-native-image-picker: df2b20cdfa981f7288f4019774d9baa26a4772c1
   react-native-safe-area-context: 7e513d737b0b5c1d10bbe0e5fcc9f925a7be144c
   react-native-slider: bb7eb4732940fab78217e1c096bb647d8b0d1cf3

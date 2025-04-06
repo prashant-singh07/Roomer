@@ -77,7 +77,7 @@ const LoginScreen: FC<LoginScreenProps> = props => {
     // else show error
   }
 
-  function navigateToHomeScreens() {
+  function navigateToInvoiceScreens() {
     const replaceAction = StackActions.replace('BottomTabs');
     navigation.dispatch(replaceAction);
   }
@@ -143,7 +143,7 @@ const LoginScreen: FC<LoginScreenProps> = props => {
         isSuccess={true}
         message="Login Success"
         description=""
-        onModalHide={() => navigateToHomeScreens()}
+        onModalHide={() => navigateToInvoiceScreens()}
       />
     </View>
   );
