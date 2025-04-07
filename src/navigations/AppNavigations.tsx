@@ -5,7 +5,9 @@ import {
   InventoryScreen,
   InvoiceScreen,
   LoginScreen,
+  RecordSaleScreen,
   RegisterScreen,
+  SaleRecordedScreen,
 } from '../screens';
 import {CustomTabBar} from '../components';
 
@@ -43,6 +45,16 @@ function AppNavigations() {
       <Stack.Screen
         name="BottomTabs"
         component={BottomTabs}
+        options={{gestureEnabled: false}}
+      />
+      <Stack.Screen
+        name="RecordSaleScreen"
+        component={RecordSaleScreen}
+        options={{gestureEnabled: false}}
+      />
+      <Stack.Screen
+        name="SaleRecordedScreen"
+        component={SaleRecordedScreen}
         options={{gestureEnabled: false}}
       />
     </Stack.Navigator>

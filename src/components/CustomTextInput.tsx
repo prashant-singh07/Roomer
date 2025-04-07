@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     // paddingVertical: 10,
   },
   inputContainerStyle: {
-    flex: 1,
+    // flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     // backgroundColor: 'red',

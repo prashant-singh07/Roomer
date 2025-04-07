@@ -2,6 +2,9 @@ import React, {FC} from 'react';
 import {View, Text, StyleSheet, Image} from 'react-native';
 import {COLORS, FONTS} from '../../../assets/theme';
 import {IMAGES} from '../../../assets/images';
+import {CustomButton} from '../../../components';
+import {SCREEN_WIDTH} from '../../../utilities';
+import {StackActions, useNavigation} from '@react-navigation/native';
 
 interface InvoiceScreenProps {}
 
@@ -27,6 +30,12 @@ const INVOICE_LIST = [
 ];
 
 const InvoiceScreen: FC<InvoiceScreenProps> = props => {
+  const navigation = useNavigation();
+
+  const handleRecordSalePressed = () => {
+    const stackAction = StackActions.push('RecordSaleScreen');
+    navigation.dispatch(stackAction);
+  };
   return (
     <View style={styles.screenContainer}>
       <View style={styles.headerContainer}>
@@ -37,14 +46,14 @@ const InvoiceScreen: FC<InvoiceScreenProps> = props => {
         <Image style={styles.profileIcon} source={IMAGES.PROFILE_PIC} />
       </View>
       <View style={styles.mainContainer}>
-        <View>
+        <View style={{flex: 1}}>
           <Text style={styles.yourBillsText}>YOUR BILLS</Text>
           <View style={styles.separatorStyle}></View>
           {INVOICE_LIST.map(item => {
             const {id, date, name, price} = item;
             return (
               <>
-                <View key={id} style={styles.rowCenter}>
+                <View key={id?.toString()} style={styles.rowCenter}>
                   <View style={styles.userAndIdContainer}>
                     <Text>{name}</Text>
                     <Text>{`#${id} - ${date}`}</Text>
@@ -56,6 +65,11 @@ const InvoiceScreen: FC<InvoiceScreenProps> = props => {
             );
           })}
         </View>
+        <CustomButton
+          title="+ Record Sale"
+          style={styles.buttonContainer}
+          onPress={handleRecordSalePressed}
+        />
       </View>
     </View>
   );
@@ -100,17 +114,22 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.REGULAR,
     color: COLORS['787878'],
   },
+  rowCenter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   separatorStyle: {
     height: 1,
     backgroundColor: COLORS['EBEBEB'],
     marginVertical: 16,
   },
-  rowCenter: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
   userAndIdContainer: {
     flex: 1,
+  },
+  buttonContainer: {
+    width: SCREEN_WIDTH / 2,
+    alignSelf: 'flex-end',
+    borderRadius: 40,
   },
 });
 
