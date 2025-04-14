@@ -1,134 +1,128 @@
 import React, {FC, useEffect, useRef, useState} from 'react';
-import {
-  Dimensions,
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {COLORS, FONTS} from '../../../assets/theme';
 import {
   CustomButton,
   CustomTextInput,
-  CustomToastMessage,
   CustomTouchable,
 } from '../../../components';
 import {StackActions, useNavigation} from '@react-navigation/native';
-import {performEmailPhoneValidation, SCREEN_WIDTH} from '../../../utilities';
-import {IMAGES} from '../../../assets/images';
-import {CustomToastMessageRef} from '../../../components/CustomToastMessage';
+import {performMobileValidation} from '../../../utilities';
 import {useDispatch, useSelector} from 'react-redux';
-import {getSampleData} from '../../../store/sampleSlice';
 import type {AppDispatch, RootState} from '../../../store/store'; // Import types
+import {onLogin} from '../../../store/authSlice';
+import {useToast} from '../../../utilities/toast';
 
 interface LoginScreenProps {}
 
 const LoginScreen: FC<LoginScreenProps> = props => {
-  const navigation = useNavigation();
-
-  const emailPhoneValueRef = useRef('');
+  const mobileNumberRef = useRef('');
   const passwordValueRef = useRef('');
   const [isButtonEnabled, setIsButtonEnabled] = useState<boolean>(false);
-  const refModal = useRef<CustomToastMessageRef>(null);
 
+  const {showToast} = useToast();
+  const navigation = useNavigation();
   const dispatch = useDispatch<AppDispatch>();
-  const {sampleData, sampleDataFailure, sampleDataLoading, sampleDataSuccess} =
-    useSelector((state: RootState) => state.sample);
+  const {loading, success, error, message, description, data} = useSelector(
+    (state: RootState) => state.auth,
+  );
 
   useEffect(() => {
-    dispatch(getSampleData());
+    if (success) {
+      handleOnLoginSuccess();
+      showToast(message, description, true);
+      return;
+    }
+    if (error) {
+      handleOnLoginError();
+      showToast(message, description, false);
+      return;
+    }
+  }, [success, error]);
 
-    return () => {
-      refModal.current = null;
-    };
-  }, []);
+  function handleOnLoginError() {}
+  console.log('data', data);
 
-  function validateInputs() {
-    const isEmailPhoneValid = performEmailPhoneValidation(
-      emailPhoneValueRef.current,
-    );
-    const isPasswordValid = passwordValueRef.current.length > 0;
-    return isEmailPhoneValid && isPasswordValid;
-  }
-
-  function handleEmailPhoneChanged(inputText: string) {
-    emailPhoneValueRef.current = inputText;
-    setIsButtonEnabled(validateInputs());
-  }
-
-  function handlePasswordChanged(inputText: string) {
-    passwordValueRef.current = inputText;
-    setIsButtonEnabled(validateInputs());
-  }
-
-  function handleContinuePressed() {
-    console.log(
-      'LOG:-->\nemail/phone:',
-      emailPhoneValueRef.current,
-      '\npassword:',
-      passwordValueRef.current,
-    );
-
-    refModal.current?.open();
-
-    // make the apii call to perform credential validation
-    // if true -> save login creds -> navigate to home
-    // else show error
-  }
-
-  function navigateToInvoiceScreens() {
+  function handleOnLoginSuccess() {
+    const {is_profile_completed, is_shop_linked} = data;
+    if (!is_profile_completed) {
+      const replaceAction = StackActions.replace('AddProfileScreen');
+      navigation.dispatch(replaceAction);
+      return;
+    }
+    if (!is_shop_linked) {
+      const replaceAction = StackActions.replace('AddShopScreen');
+      navigation.dispatch(replaceAction);
+      return;
+    }
     const replaceAction = StackActions.replace('BottomTabs');
     navigation.dispatch(replaceAction);
   }
 
-  function handleGoogleLogin() {}
+  function validateInputs() {
+    if (
+      performMobileValidation(mobileNumberRef.current) &&
+      passwordValueRef.current.length > 0
+    ) {
+      setIsButtonEnabled(true);
+    } else {
+      setIsButtonEnabled(false);
+    }
+  }
+
+  function handleMobileChanged(inputText: string) {
+    mobileNumberRef.current = inputText;
+    validateInputs();
+  }
+
+  function handlePasswordChanged(inputText: string) {
+    passwordValueRef.current = inputText?.trim();
+    validateInputs();
+  }
+
+  function handleContinuePressed() {
+    const apiPayload = {
+      mobile: mobileNumberRef.current,
+      password: passwordValueRef.current,
+    };
+    dispatch(onLogin(apiPayload));
+  }
 
   function handleRegisterPressed() {
     const navigationAction = StackActions.push('RegisterScreen');
     navigation.dispatch(navigationAction);
   }
+  // 9892341234
 
   return (
     <View style={styles.screenContainer}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Text
-          style={{
-            fontSize: 40,
-            marginBottom: 40,
-            textAlign: 'center',
-            color: COLORS['7F30FF'],
-          }}>
-          Roomer
-        </Text>
+        <Text style={styles.logoText}>ManageKaro</Text>
         <CustomTextInput
-          label="Email/Phone"
-          onChangeText={handleEmailPhoneChanged}
-          containerStyle={styles.marginB20}
+          inputContainerStyle={styles.marginB20}
+          label="Phone"
+          placeholder="Enter your phone number"
+          onChangeText={handleMobileChanged}
+          keyboardType="numeric"
+          maxLength={10}
         />
         <CustomTextInput
+          inputContainerStyle={styles.marginB30}
           label="Password"
+          placeholder="Enter your password"
           onChangeText={handlePasswordChanged}
-          containerStyle={styles.marginB30}
+          secureTextEntry={true}
         />
         <CustomButton
+          isLoading={loading}
           disabled={!isButtonEnabled}
           title="Continue"
           onPress={handleContinuePressed}
         />
         <View style={styles.orContainer}>
           <View style={styles.dividerLine} />
-          <Text style={styles.orText}>OR</Text>
-          <View style={styles.dividerLine} />
         </View>
 
-        <CustomButton
-          style={styles.googleButton}
-          leftImage={IMAGES.GOOGLE_ICON}
-          title="Login with Google"
-          titleStyle={styles.googleButtonTitle}
-          onPress={handleGoogleLogin}
-        />
         <View style={styles.registerContainer}>
           <Text style={styles.registerDescriptionText}>
             Don't have an account?{' '}
@@ -138,13 +132,6 @@ const LoginScreen: FC<LoginScreenProps> = props => {
           </CustomTouchable>
         </View>
       </ScrollView>
-      <CustomToastMessage
-        ref={refModal}
-        isSuccess={true}
-        message="Login Success"
-        description=""
-        onModalHide={() => navigateToInvoiceScreens()}
-      />
     </View>
   );
 };
@@ -159,6 +146,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: COLORS['FFFFFF'],
     paddingHorizontal: 20,
+  },
+  logoText: {
+    fontSize: 40,
+    marginBottom: 40,
+    textAlign: 'center',
+    color: COLORS['7F30FF'],
   },
   marginB20: {
     marginBottom: 20,

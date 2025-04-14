@@ -21,16 +21,19 @@ import {store} from './src/store/store';
 import {AppNavigations} from './src/navigations';
 import {COLORS} from './src/assets/theme';
 import {NavigationContainer} from '@react-navigation/native';
+import {ToastProvider} from './src/utilities/toast';
 
 function App(): React.JSX.Element {
   return (
     <Provider store={store}>
       <SafeAreaProvider>
-        <SafeAreaView style={styles.screenContainer}>
-          <NavigationContainer>
-            <AppNavigations />
-          </NavigationContainer>
-        </SafeAreaView>
+        <ToastProvider>
+          <SafeAreaView style={styles.screenContainer}>
+            <NavigationContainer>
+              <AppNavigations />
+            </NavigationContainer>
+          </SafeAreaView>
+        </ToastProvider>
       </SafeAreaProvider>
     </Provider>
   );

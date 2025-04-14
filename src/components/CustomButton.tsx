@@ -1,5 +1,6 @@
 import React, {FC} from 'react';
 import {
+  ActivityIndicator,
   Image,
   ImageSourcePropType,
   ImageStyle,
@@ -10,8 +11,10 @@ import {
 } from 'react-native';
 import CutsomTouchable, {CutsomTouchableProps} from './CustomTouchable';
 import {COLORS, FONTS} from '../assets/theme';
+import {IMAGES} from '../assets/images';
 
 export interface CustomButtonProps extends CutsomTouchableProps {
+  isLoading?: boolean | undefined;
   leftImage?: ImageSourcePropType | undefined;
   leftImageStyle?: StyleProp<ImageStyle> | undefined;
   title: string | undefined;
@@ -22,6 +25,7 @@ export interface CustomButtonProps extends CutsomTouchableProps {
 
 const CustomButton: FC<CustomButtonProps> = function (props) {
   const {
+    isLoading,
     leftImage,
     leftImageStyle,
     title,
@@ -33,29 +37,36 @@ const CustomButton: FC<CustomButtonProps> = function (props) {
 
   return (
     <CutsomTouchable
-      activeOpacity={0.6}
       style={[
         styles.containerStyle,
         style,
         disabled && styles.disabledContainerStyle,
       ]}
-      disabled={disabled}
+      disabled={disabled || isLoading}
       {...rest}>
-      {leftImage ? (
-        <Image
-          source={leftImage}
-          style={[styles.leftImageStyle, leftImageStyle]}
-        />
-      ) : null}
-      {title ? (
-        <Text style={[styles.titleStyle, titleStyle]}>{title}</Text>
-      ) : null}
-      {rightImage ? (
-        <Image
-          source={rightImage}
-          style={[styles.rightImageStyle, rightImageStyle]}
-        />
-      ) : null}
+      <>
+        {isLoading ? (
+          <ActivityIndicator color={COLORS['FFFFFF']} size="small" />
+        ) : (
+          <>
+            {leftImage ? (
+              <Image
+                source={leftImage}
+                style={[styles.leftImageStyle, leftImageStyle]}
+              />
+            ) : null}
+            {title ? (
+              <Text style={[styles.titleStyle, titleStyle]}>{title}</Text>
+            ) : null}
+            {rightImage ? (
+              <Image
+                source={rightImage}
+                style={[styles.rightImageStyle, rightImageStyle]}
+              />
+            ) : null}
+          </>
+        )}
+      </>
     </CutsomTouchable>
   );
 };
@@ -64,8 +75,8 @@ const styles = StyleSheet.create({
   containerStyle: {
     flexDirection: 'row',
     borderRadius: 12,
-    height: 48,
     paddingHorizontal: 20,
+    paddingVertical: 13,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: COLORS['7F30FF'],

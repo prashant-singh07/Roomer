@@ -39,11 +39,12 @@ const CustomHeader: FC<CustomHeaderProps> = props => {
           <CustomTouchable
             style={styles.iconContainer}
             onPress={handleBackPressed}>
-            <Image style={styles.iconStyle} source={{}} />
+            <Image style={styles.iconStyle} source={IMAGES.BACK_ICON} />
           </CustomTouchable>
         )}
-        <Text style={[styles.titleStyle, titleStyle]}>{title}</Text>
+        {title && <Text style={[styles.titleStyle, titleStyle]}>{title}</Text>}
       </View>
+      {/* <View> */}
       {onRightPress && (
         <CustomTouchable
           style={styles.iconContainer}
@@ -51,6 +52,7 @@ const CustomHeader: FC<CustomHeaderProps> = props => {
           <Image source={IMAGES.CLOSE_ICON} style={styles.iconStyle} />
         </CustomTouchable>
       )}
+      {/* </View> */}
     </View>
   );
 };
@@ -64,13 +66,16 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   leftContainer: {
-    // flex: 1,
+    flex: 1,
+    flexDirection: 'row',
     alignItems: 'center',
   },
   iconContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 4,
+    paddingHorizontal: 0,
+    paddingVertical: 4,
+    marginRight: 12,
   },
   iconStyle: {
     height: 20,
@@ -81,7 +86,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: FONTS.SEMI_BOLD,
     color: COLORS['0C0C0C'],
-    flex: 1,
   },
 });
 

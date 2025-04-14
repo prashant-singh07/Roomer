@@ -6,3 +6,4 @@ export {default as CustomModal} from './CustomModal';
 export {default as CustomToastMessage} from './CustomToastMessage';
 export {default as CustomHeader} from './CustomHeader';
 export {default as CustomDivider} from './CustomDivider';
+export {default as CustomSecondaryButton} from './CustomSecondaryButton';

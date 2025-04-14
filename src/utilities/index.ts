@@ -14,6 +14,11 @@ export function performEmailPhoneValidation(text: string) {
   return regex.test(text);
 }
 
+export function performMobileValidation(text: string) {
+  const regex = /^[6-9]\d{9}$/;
+  return regex.test(text);
+}
+
 export default function usePreventBack(
   message = 'You cannot go back from here.',
 ) {

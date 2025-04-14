@@ -17,6 +17,7 @@ import {
   StyleProp,
   TextStyle,
   ViewStyle,
+  Platform,
 } from 'react-native';
 import {COLORS, FONTS} from '../assets/theme';
 
@@ -39,7 +40,7 @@ const CustomTextInput: FC<CustomTextInputProps> = props => {
     containerStyle,
     onChangeText,
     errorMessage,
-    showAnimation = true,
+    showAnimation,
     placeholder,
     rightComponent,
     leftComponent,
@@ -74,9 +75,10 @@ const CustomTextInput: FC<CustomTextInputProps> = props => {
   }
 
   return (
-    <KeyboardAvoidingView
-      // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={[styles.containerStyle, containerStyle]}>
+    // <KeyboardAvoidingView
+    //   behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    //   style={[styles.containerStyle, containerStyle]}>
+    <View>
       {label && !showAnimation && (
         <Text style={[styles.fixedLabelStyle, labelStyle]}>{label}</Text>
       )}
@@ -98,11 +100,11 @@ const CustomTextInput: FC<CustomTextInputProps> = props => {
                 }),
                 fontSize: labelPositionRef.interpolate({
                   inputRange: [0, 1],
-                  outputRange: [16, 12],
+                  outputRange: [14, 12],
                 }),
                 color: labelPositionRef.interpolate({
                   inputRange: [0, 1],
-                  outputRange: [COLORS['B1B1B1'], COLORS['7F30FF']],
+                  outputRange: [COLORS['C0C0C0'], COLORS['7F30FF']],
                 }),
               },
               labelStyle,
@@ -121,24 +123,27 @@ const CustomTextInput: FC<CustomTextInputProps> = props => {
         />
         {rightComponent && rightComponent()}
       </View>
-    </KeyboardAvoidingView>
+    </View>
+    //</KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   containerStyle: {
+    flex: 1,
     // paddingVertical: 10,
   },
   inputContainerStyle: {
     // flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    // backgroundColor: 'red',
+    backgroundColor: COLORS['FFFFFF'],
     borderWidth: 1,
     borderColor: COLORS['E0E0E0'],
     borderRadius: 12,
     paddingHorizontal: 12,
-    height: 48,
+    paddingVertical: 13,
+    // height: 48,
     position: 'relative',
     // justifyContent: 'center',
   },
@@ -146,20 +151,22 @@ const styles = StyleSheet.create({
     borderColor: COLORS['7F30FF'],
   },
   fixedLabelStyle: {
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: FONTS.MEDIUM,
-    color: COLORS['272727'],
+    color: COLORS['0C0C0C'],
+    marginBottom: 8,
   },
   labelStyle: {
     position: 'absolute',
     left: 12,
-    backgroundColor: COLORS['FFFFFF'],
+    backgroundColor: COLORS['F9F9FA'],
     paddingHorizontal: 4,
     fontFamily: FONTS.MEDIUM,
   },
   textInputStyle: {
-    height: 40,
+    // height: 40,
     paddingHorizontal: 4,
+    paddingVertical: 0,
     // backgroundColor: 'pink',
     flex: 1,
   },

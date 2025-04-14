@@ -13,30 +13,32 @@ const request = async (
     method: method,
     headers: headers,
   };
-  if (body) options.body = body;
+  if (body)
+    options.body = typeof body === 'string' ? body : JSON.stringify(body);
 
   try {
+    console.log(url);
+    console.log(options);
     const controller = new AbortController(); // To handle timeout
     const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
 
     const response = await fetch(url, {...options, signal: controller.signal});
-
     clearTimeout(timeoutId); // Clear timeout when request is successful
 
-    if (!response.ok) {
-      const errorMessage = await response.text();
-      throw new Error(`Error ${response.status}: ${errorMessage}`);
-    }
-
-    return await response.json(); // Convert response to JSON
-  } catch (error) {
-    if (error instanceof Error) {
-      console.error(`HTTP ${method} Request Error:`, error.message);
+    const jsonResponse = await response.json();
+    console.log('jsonResponse', jsonResponse);
+    if (response.ok) {
+      return jsonResponse;
     } else {
-      console.error('Unknown error:', error);
+      throw jsonResponse;
     }
-
-    throw error;
+  } catch (error) {
+    let _error = error;
+    if (error instanceof Error) {
+      _error = error.message;
+    }
+    console.log('error', _error);
+    throw _error;
   }
 };
 
@@ -50,17 +52,17 @@ const HttpWrapper = {
   POST: (
     url: RequestInfo,
     body: BodyInit_ | undefined,
-    customHeaders: HeadersInit_ | undefined,
+    customHeaders?: HeadersInit_ | undefined,
   ) => request('POST', url, body, customHeaders),
   PUT: (
     url: RequestInfo,
     body: BodyInit_ | undefined,
-    customHeaders: HeadersInit_ | undefined,
+    customHeaders?: HeadersInit_ | undefined,
   ) => request('PUT', url, body, customHeaders),
   DELETE: (
     url: RequestInfo,
     body: BodyInit_ | undefined,
-    customHeaders: HeadersInit_ | undefined,
+    customHeaders?: HeadersInit_ | undefined,
   ) => request('DELETE', url, null, customHeaders),
 };
 

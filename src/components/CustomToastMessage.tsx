@@ -6,15 +6,7 @@ import React, {
   useImperativeHandle,
   useState,
 } from 'react';
-import {
-  StyleSheet,
-  TouchableOpacity,
-  TouchableOpacityProps,
-  View,
-  Text,
-  Platform,
-  Image,
-} from 'react-native';
+import {StyleSheet, View, Text, Platform, Image} from 'react-native';
 import {COLORS} from '../assets/theme';
 import ReactNativeModal, {ModalProps} from 'react-native-modal';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -24,6 +16,7 @@ interface CustomToastMessageProps extends Partial<ModalProps> {
   message?: string | undefined;
   description?: string | undefined;
   isSuccess?: boolean | undefined;
+  visible: boolean;
   // autoClose?: number;
 }
 export interface CustomToastMessageRef {
@@ -35,30 +28,19 @@ const CustomToastMessage = forwardRef<
   CustomToastMessageRef,
   CustomToastMessageProps
 >((props, ref) => {
-  const {message, description, isSuccess = true, ...rest} = props;
-  const [isVisible, setIsVisible] = useState<boolean>(false);
+  const {message, description, isSuccess, visible = false, ...rest} = props;
+  const [isVisible, setIsVisible] = useState<boolean>(visible);
 
   const {top} = useSafeAreaInsets();
-
-  useImperativeHandle(ref, () => {
-    return {
-      open: openModal,
-      close: closeModal,
-    };
-  });
 
   useEffect(() => {
     let timer: ReturnType<typeof setTimeout>;
     if (isVisible) {
-      timer = setTimeout(() => closeModal(), 2000);
+      timer = setTimeout(() => closeModal(), 3000);
     }
 
     return () => clearTimeout(timer);
   }, [isVisible]);
-
-  function openModal() {
-    setIsVisible(true);
-  }
 
   function closeModal() {
     setIsVisible(false);
